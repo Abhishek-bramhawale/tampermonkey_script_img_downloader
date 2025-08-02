@@ -76,4 +76,36 @@ function addYouTubeButtons(){
 }
 
 
+function addGenericButtons(){
+    const imgs = document.querySelectorAll('img');
+
+    imgs.forEach(img => {
+        if(img.dataset.downloadAdded) return;
+
+        if(img.width < 100 || img.height < 50) return;  
+
+        const btn = document.createElement('div');
+        btn.className = 'universal-download-btn';
+        btn.textContent = '↓';
+
+        btn.onclick = (e)=>{
+            e.stopPropagation();
+            e.preventDefault();
+
+            fetch(img.src).then(resp => resp.blob()).then(blob=>{
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'image.jpg';
+                a.click();
+            })
+        };
+
+        img.parentElement.style.position = 'relative';
+        img.parentElement.appendChild(btn);
+
+        img.dataset.downloadAdded = '1';
+    })
+}
+
+
 })
