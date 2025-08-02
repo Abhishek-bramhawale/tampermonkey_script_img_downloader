@@ -107,5 +107,28 @@ function addGenericButtons(){
     })
 }
 
+function runScript(){
+    if(isYouTube){
+        addYouTubeButtons();
+    } else {
+        addGenericButtons();
+    }
+}
+
+window.addEventListener('load', () => {
+    runScript();
+
+    let timeout;
+    const observer = new MutationObserver(() => {
+        clearTimeout(timeout);
+        timeout = setTimeout(runScript, 1000);  // debounce
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+});
+
 
 })
