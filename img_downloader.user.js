@@ -1,0 +1,48 @@
+// ==UserScript==
+// @name         YouTube + Universal Image Downloader
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  Adds download buttons to YouTube thumbnails and images on all sites
+// @match        *://*/*
+// @grant        none
+// @run-at       document-end
+// ==/UserScript==
+
+(function () {
+    'use strict';
+
+    const isYouTube = window.location.hostname.includes("youtube.com");
+
+    const style = document.createElement('style');
+    style.textContent = `
+      .ytd-download-btn, .universal-download-btn {
+          position:absolute;
+          bottom:6px;
+          right:6px;
+          background:rgba(0,0,0,0.7);
+          color:#fff;
+          font-size:12px;
+          padding: 3px 6px;
+          border-radius: 4px;
+          cursor:pointer;
+          z-index:9999;
+      }
+    `;
+    document.head.appendChild(style);
+
+    function downloadYouTubeThumbnail(videoId){
+        const qualities = ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault', 'default'];
+        let found = false;
+        for(let q of qualities){
+            const url = `https://i.ytimg.com/vi/${videoId}/${q}.jpg`;
+            fetch(url).then(r=>{
+                if(r.ok && !found){
+                    found = true;
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `thumbnail-${videoId}.jpg`;
+                    a.click();
+                }
+            })
+        }
+    }})
