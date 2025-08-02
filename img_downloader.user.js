@@ -45,4 +45,35 @@
                 }
             })
         }
-    }})
+    }
+
+function addYouTubeButtons(){
+    const thumbnails = document.querySelectorAll('img');
+
+    thumbnails.forEach(img => {
+        if(img.dataset.downloadAdded) return;
+
+        const match = img.src.match(/\/vi\/([^\/\?]+)/);
+        if(match){
+            const videoId = match[1];
+            const btn = document.createElement('div');
+            btn.className = 'ytd-download-btn';
+            btn.textContent = 'Download';
+
+            btn.onclick = (e)=>{
+                e.stopPropagation();
+                e.preventDefault();
+                downloadYouTubeThumbnail(videoId);
+            }
+
+            img.style.position = 'relative';
+            img.parentElement.style.position = 'relative';
+            img.parentElement.appendChild(btn);
+
+            img.dataset.downloadAdded = '1';
+        }
+    })
+}
+
+
+})
